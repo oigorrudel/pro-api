@@ -1,6 +1,7 @@
 package br.xksoberbado.proapi.service;
 
-import br.xksoberbado.proapi.dto.request.PersonRequest;
+import br.xksoberbado.proapi.dto.request.CreatePersonRequest;
+import br.xksoberbado.proapi.dto.request.UpdatePersonRequest;
 import br.xksoberbado.proapi.model.Person;
 import br.xksoberbado.proapi.repository.PersonRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,10 +20,19 @@ public class PersonService {
             .orElseThrow();
     }
 
-    public Person create(final PersonRequest request) {
+    public Person create(final CreatePersonRequest request) {
         final var person = Person.of(
             UUID.randomUUID(), request.getName(), request.getGender()
         );
+
+        return repository.save(person);
+    }
+
+    public Person update(final UUID personId,
+                         final UpdatePersonRequest request) {
+        final var person = getById(personId);
+
+        person.setName(request.getName());
 
         return repository.save(person);
     }
