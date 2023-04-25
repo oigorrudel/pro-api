@@ -1,6 +1,6 @@
 package br.xksoberbado.proapi.controller;
 
-import br.xksoberbado.proapi.model.Person;
+import br.xksoberbado.proapi.dto.response.PersonResponse;
 import br.xksoberbado.proapi.service.PersonService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,7 +18,9 @@ public class PersonController {
     private final PersonService service;
 
     @GetMapping("{personId}")
-    private Person get(@PathVariable UUID personId) {
-        return service.getById(personId);
+    private PersonResponse get(@PathVariable UUID personId) {
+        final var person = service.getById(personId);
+
+        return PersonResponse.of(person.getId(), person.getName());
     }
 }

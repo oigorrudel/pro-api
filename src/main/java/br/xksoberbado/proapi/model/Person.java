@@ -21,6 +21,8 @@ public class Person {
 
     private String name;
 
-    @Enumerated(EnumType.STRING)
+//    @JsonIgnore //dto / controller
+//    @Column(nullable = false, updatable = false)
+    @Enumerated(EnumType.STRING)// totalmente compativel
     private Gender gender;
 }
