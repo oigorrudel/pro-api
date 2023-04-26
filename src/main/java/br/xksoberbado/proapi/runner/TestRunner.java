@@ -21,8 +21,17 @@ public class TestRunner implements ApplicationRunner {
 
     @Override
     public void run(final ApplicationArguments args) throws Exception {
-        final var joao = Person.of(UUID.randomUUID(), "João", Gender.MALE);
-        final var maria = Person.of(UUID.randomUUID(), "Maria", Gender.FEMALE);
+        final var joao = Person.builder()
+            .id(UUID.randomUUID())
+            .name("João")
+            .gender(Gender.MALE)
+            .build();
+
+        final var maria = Person.builder()
+            .id(UUID.randomUUID())
+            .name("Maria")
+            .gender(Gender.FEMALE)
+            .build();
 
         log.info("João: {}", joao);
         log.info("Maria: {}", maria);

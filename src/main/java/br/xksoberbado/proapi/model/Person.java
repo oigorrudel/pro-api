@@ -10,10 +10,10 @@ import java.util.UUID;
 
 @Getter
 @Setter
+@Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor(staticName = "of")
+@AllArgsConstructor
 @Entity
-@ToString
 public class Person {
 
     @Id
