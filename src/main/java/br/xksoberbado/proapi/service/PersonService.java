@@ -3,38 +3,40 @@ package br.xksoberbado.proapi.service;
 import br.xksoberbado.proapi.domain.PersonDomain;
 import br.xksoberbado.proapi.model.Person;
 import br.xksoberbado.proapi.repository.PersonRepository;
+import br.xksoberbado.proapi.util.ObjectMapperUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.function.Function;
 
 @Service
 @RequiredArgsConstructor
 public class PersonService {
 
     private final PersonRepository repository;
+    private final ObjectMapperUtil objectMapperUtil;
 
     public List<PersonDomain> getAll() {
-        return repository.findAll()
-            .stream()
-            .map(mapPersonToDomain())
-            .toList();
+        return objectMapperUtil.mapAll(
+            repository.findAll(), PersonDomain.class
+        );
     }
 
     public PersonDomain getById(final UUID personId) {
         return repository.findById(personId)
-            .map(mapPersonToDomain())
+            .map(objectMapperUtil.mapFn(PersonDomain.class))
             .orElseThrow();
     }
 
     public PersonDomain create(final PersonDomain personDomain) {
-        final var person = mapDomainToPerson()
-            .apply(personDomain);
+        final var person = objectMapperUtil.map(
+            personDomain, Person.class
+        );
 
-        return mapPersonToDomain()
-            .apply(repository.save(person));
+        return objectMapperUtil.map(
+            repository.save(person), PersonDomain.class
+        );
     }
 
     public PersonDomain update(final PersonDomain updatePersonDomain) {
@@ -43,27 +45,9 @@ public class PersonService {
         personDomain.setName(updatePersonDomain.getName());
 
         final var person = repository.save( //@CreationTimestamp
-            mapDomainToPerson()
-                .apply(personDomain)
+            objectMapperUtil.map(personDomain, Person.class)
         );
 
-        return mapPersonToDomain()
-            .apply(person);
-    }
-
-    private Function<Person, PersonDomain> mapPersonToDomain() {
-        return person -> PersonDomain.builder()
-            .id(person.getId())
-            .name(person.getName())
-            .gender(person.getGender())
-            .build();
-    }
-
-    private Function<PersonDomain, Person> mapDomainToPerson() {
-        return person -> Person.builder()
-            .id(person.getId())
-            .name(person.getName())
-            .gender(person.getGender())
-            .build();
+        return objectMapperUtil.map(person, PersonDomain.class);
     }
 }

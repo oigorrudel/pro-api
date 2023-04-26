@@ -5,6 +5,7 @@ import br.xksoberbado.proapi.dto.request.UpdatePersonRequest;
 import br.xksoberbado.proapi.dto.response.PersonResponse;
 import br.xksoberbado.proapi.factory.PersonDomainFactory;
 import br.xksoberbado.proapi.service.PersonService;
+import br.xksoberbado.proapi.util.ObjectMapperUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -19,20 +20,18 @@ public class PersonController {
 
     private final PersonService service;
     private final PersonDomainFactory personDomainFactory;
+    private final ObjectMapperUtil objectMapperUtil;
 
     @GetMapping
     public List<PersonResponse> getAll() {
-        return service.getAll()
-            .stream()
-            .map(person -> PersonResponse.of(person.getId(), person.getName()))
-            .toList();
+        return objectMapperUtil.mapAll(service.getAll(), PersonResponse.class);
     }
 
     @GetMapping("{personId}")
     public PersonResponse get(@PathVariable UUID personId) {
         final var person = service.getById(personId);
 
-        return PersonResponse.of(person.getId(), person.getName());
+        return objectMapperUtil.map(person, PersonResponse.class);
     }
 
     @PostMapping
@@ -41,7 +40,7 @@ public class PersonController {
             personDomainFactory.toCreate(request)
         );
 
-        return PersonResponse.of(person.getId(), person.getName());
+        return objectMapperUtil.map(person, PersonResponse.class);
     }
 
     @PutMapping("{personId}")
@@ -51,6 +50,6 @@ public class PersonController {
             personDomainFactory.toUpdate(personId, request)
         );
 
-        return PersonResponse.of(person.getId(), person.getName());
+        return objectMapperUtil.map(person, PersonResponse.class);
     }
 }

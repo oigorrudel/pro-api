@@ -1,15 +1,15 @@
 package br.xksoberbado.proapi.domain;
 
 import br.xksoberbado.proapi.model.Gender;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.UUID;
 
 @Getter
 @Setter
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class PersonDomain {
 
     private UUID id;
