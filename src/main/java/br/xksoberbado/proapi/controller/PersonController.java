@@ -1,9 +1,9 @@
 package br.xksoberbado.proapi.controller;
 
-import br.xksoberbado.proapi.domain.PersonDomain;
 import br.xksoberbado.proapi.dto.request.CreatePersonRequest;
 import br.xksoberbado.proapi.dto.request.UpdatePersonRequest;
 import br.xksoberbado.proapi.dto.response.PersonResponse;
+import br.xksoberbado.proapi.factory.PersonDomainFactory;
 import br.xksoberbado.proapi.service.PersonService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
@@ -18,6 +18,7 @@ import java.util.UUID;
 public class PersonController {
 
     private final PersonService service;
+    private final PersonDomainFactory personDomainFactory;
 
     @GetMapping
     public List<PersonResponse> getAll() {
@@ -37,11 +38,7 @@ public class PersonController {
     @PostMapping
     public PersonResponse create(@RequestBody @Validated CreatePersonRequest request) {
         final var person = service.create(
-            PersonDomain.builder()
-                .id(UUID.randomUUID())
-                .name(request.getName())
-                .gender(request.getGender())
-                .build()
+            personDomainFactory.toCreate(request)
         );
 
         return PersonResponse.of(person.getId(), person.getName());
@@ -51,10 +48,7 @@ public class PersonController {
     public PersonResponse update(@PathVariable UUID personId,
                                  @RequestBody @Validated UpdatePersonRequest request) {
         final var person = service.update(
-            PersonDomain.builder()
-                .id(personId)
-                .name(request.getName())
-                .build()
+            personDomainFactory.toUpdate(personId, request)
         );
 
         return PersonResponse.of(person.getId(), person.getName());
