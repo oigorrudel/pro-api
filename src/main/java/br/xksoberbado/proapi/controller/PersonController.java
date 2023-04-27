@@ -9,6 +9,7 @@ import br.xksoberbado.proapi.repository.filter.PersonFilters;
 import br.xksoberbado.proapi.service.PersonService;
 import br.xksoberbado.proapi.util.ObjectMapperUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,6 +20,8 @@ import java.util.UUID;
 @RequestMapping("people")
 @RequiredArgsConstructor
 public class PersonController {
+
+    //endpoints, bodys, responses, responseStatus, requestParam
 
     private final PersonService service;
     private final PersonDomainFactory personDomainFactory;
@@ -41,6 +44,7 @@ public class PersonController {
     }
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public PersonResponse create(@RequestBody @Validated CreatePersonRequest request) {
         final var person = service.create(
             personDomainFactory.toCreate(request)
@@ -50,6 +54,7 @@ public class PersonController {
     }
 
     @PutMapping("{personId}")
+    @ResponseStatus(HttpStatus.ACCEPTED) //padrão OK ta de boa, só padronizar e utilizar sempre
     public PersonResponse update(@PathVariable UUID personId,
                                  @RequestBody @Validated UpdatePersonRequest request) {
         final var person = service.update(
@@ -57,5 +62,11 @@ public class PersonController {
         );
 
         return objectMapperUtil.map(person, PersonResponse.class);
+    }
+
+    @DeleteMapping("{personId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable UUID personId) {
+        service.delete(personId);
     }
 }

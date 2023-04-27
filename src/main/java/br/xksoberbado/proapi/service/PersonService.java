@@ -54,4 +54,8 @@ public class PersonService {
 
         return objectMapperUtil.map(person, PersonDomain.class);
     }
+
+    public void delete(final UUID personId) {
+        repository.deleteById(personId);
+    }
 }

@@ -21,3 +21,5 @@ Content-Type: application/json
   "name": "Joao 2"
 }
 
+### delete maria
+DELETE http://localhost:8080/people/9b6f770e-6713-4e69-bcd8-2458bead856d
