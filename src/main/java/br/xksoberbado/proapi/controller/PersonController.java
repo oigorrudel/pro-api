@@ -1,9 +1,11 @@
 package br.xksoberbado.proapi.controller;
 
+import br.xksoberbado.proapi.dto.params.PersonParams;
 import br.xksoberbado.proapi.dto.request.CreatePersonRequest;
 import br.xksoberbado.proapi.dto.request.UpdatePersonRequest;
 import br.xksoberbado.proapi.dto.response.PersonResponse;
 import br.xksoberbado.proapi.factory.PersonDomainFactory;
+import br.xksoberbado.proapi.repository.filter.PersonFilters;
 import br.xksoberbado.proapi.service.PersonService;
 import br.xksoberbado.proapi.util.ObjectMapperUtil;
 import lombok.RequiredArgsConstructor;
@@ -23,8 +25,12 @@ public class PersonController {
     private final ObjectMapperUtil objectMapperUtil;
 
     @GetMapping
-    public List<PersonResponse> getAll() {
-        return objectMapperUtil.mapAll(service.getAll(), PersonResponse.class);
+    public List<PersonResponse> getAll(final PersonParams params) {
+        final var filters = objectMapperUtil.map(
+            params, PersonFilters.class
+        );
+
+        return objectMapperUtil.mapAll(service.getAll(filters), PersonResponse.class);
     }
 
     @GetMapping("{personId}")

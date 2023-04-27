@@ -3,11 +3,13 @@ package br.xksoberbado.proapi.service;
 import br.xksoberbado.proapi.domain.PersonDomain;
 import br.xksoberbado.proapi.model.Person;
 import br.xksoberbado.proapi.repository.PersonRepository;
+import br.xksoberbado.proapi.repository.filter.PersonFilters;
 import br.xksoberbado.proapi.util.ObjectMapperUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -17,10 +19,12 @@ public class PersonService {
     private final PersonRepository repository;
     private final ObjectMapperUtil objectMapperUtil;
 
-    public List<PersonDomain> getAll() {
-        return objectMapperUtil.mapAll(
-            repository.findAll(), PersonDomain.class
-        );
+    public List<PersonDomain> getAll(final PersonFilters filters) {
+        final var people = Optional.ofNullable(filters.getName())
+            .map(repository::findAllByName)
+            .orElseGet(repository::findAll);
+
+        return objectMapperUtil.mapAll(people, PersonDomain.class);
     }
 
     public PersonDomain getById(final UUID personId) {

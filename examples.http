@@ -1,0 +1,23 @@
+### all people
+http://localhost:8080/people
+
+### all with fiters
+http://localhost:8080/people?name=Joao 2
+
+### create person
+POST http://localhost:8080/people
+Content-Type: application/json
+
+{
+  "name": "Maria 2",
+  "gender": "FEMALE"
+}
+
+### update joao
+PUT http://localhost:8080/people/80fbba2b-3797-46f0-9e50-03e9862461c0
+Content-Type: application/json
+
+{
+  "name": "Joao 2"
+}
+
